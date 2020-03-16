@@ -15,7 +15,15 @@ import ProductList from '@/components/ProductList';
  * 规则2）：umi的connect连接的对象，models对象域的namespace名称对应的参数名，默认赋予state的值。
  * 规则3）：组件components的参数名称要与属性名称一致。
  */
-const Products = ({ products, param0, dispatch }) => {
+const Products = ({
+  products,
+  param0,
+  dispatch,
+  list: dataSource,
+  loading,
+  total,
+  page: current,
+}) => {
   // 写多少个参数都没问题
   function handleDelete(id) {
     dispatch({
@@ -42,7 +50,7 @@ const Products = ({ products, param0, dispatch }) => {
       {/*  onDelete, products 是对应 @/components/ProductList组件的onDelete参数，products参数，鬼怎么知道对应的，安装参数名称吗？这是规则的话，就要默写，就要死记硬背 */}
       <ProductList
         onDelete={handleDelete1}
-        data={products}
+        data={dataSource}
         classAttrs={classAttrs}
         styleAttrs={styleAttrs}
       />
@@ -52,7 +60,19 @@ const Products = ({ products, param0, dispatch }) => {
 
 // 和models的namespace同名的参数获得state的值
 // 遗留问题：不同名的参数，怎么获取初始值，举个例子，后端返回菜单数据，怎么给这个参数赋值，并且传到 connect 的参数里面
-export default connect(({ products, param0 }) => ({
-  products,
-  param0,
-}))(Products);
+// export default connect(({ products, param0 }) => ({
+//   products,
+//   param0,
+// }))(Products);
+
+function mapStateToProps(state) {
+  const { list, total, page } = state.products;
+  console.log('\n\n\n' + JSON.stringify(list) + '\n\n\n');
+  return {
+    list,
+    total,
+    page,
+  };
+}
+
+export default connect(mapStateToProps)(Products);
